@@ -17,7 +17,7 @@ export class ContentScanner {
             let stream = storm.SubmissionStream({
                 subreddit: subName,
                 results: 1,
-                pollTime: 1000 * 60
+                pollTime: 1000 * (2 * Math.ceil(configurator.reddit.scanSubsList.length))
             });
 
             stream.on('submission', function(post) {
