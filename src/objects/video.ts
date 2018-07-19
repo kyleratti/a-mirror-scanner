@@ -12,7 +12,7 @@ export class Video {
      */
     static queueIfNew(redditPostId: string, url: string) {
         return request.put({
-            uri: apiUrl + '/video/queueifnew',
+            uri: apiUrl + '/video/queue',
             body: {
                 redditPostId: redditPostId,
                 videoUrl: url
