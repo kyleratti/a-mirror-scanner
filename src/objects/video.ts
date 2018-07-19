@@ -14,6 +14,7 @@ export class Video {
         return request.put({
             uri: apiUrl + '/video/queue',
             body: {
+                token: configurator.auth.token,
                 redditPostId: redditPostId,
                 videoUrl: url
             },
