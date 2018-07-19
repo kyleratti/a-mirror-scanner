@@ -27,9 +27,12 @@ export class ContentScanner {
                 let url = post.url;
                 let agent = downloaders.match(url);
 
-                if(!agent) return console.error(`Unable to find downloader agent that can handle ${url}`);
+                if(!agent) return console.error(`unable to find downloader agent that can handle '${url}'; aborting`);
 
-                Video.queueIfNew(id, url);
+                Video.queueIfNew(id, url)
+                    .catch(err => {
+                        console.error(`unable to queue if new: ${err}`);
+                    });
             });
         });
     }
