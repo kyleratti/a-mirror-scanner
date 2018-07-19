@@ -1,0 +1,36 @@
+import snoostorm from 'snoostorm';
+
+import { configurator, snooman } from 'a-mirror-util/lib/';
+import downloaders from '../downloaders';
+import { Video } from '../objects/video';
+
+export class ContentScanner {
+    start() {
+        if(configurator.reddit.scanSubsList.length <= 0)
+            throw new Error('Subreddit scan list is empty; aborting');
+
+        let storm = new snoostorm(snooman.wrap);
+    
+        configurator.reddit.scanSubsList.forEach(subName => {
+            console.log(`Starting submission stream for /r/${subName}`);
+    
+            let stream = storm.SubmissionStream({
+                subreddit: subName,
+                results: 1,
+                pollTime: 1000 * 60
+            });
+
+            stream.on('submission', function(post) {
+                if(post.is_self) return;
+
+                let id = post.id;
+                let url = post.url;
+                let agent = downloaders.match(url);
+
+                if(!agent) return console.error(`Unable to find downloader agent that can handle ${url}`);
+
+                Video.queueIfNew(id, url);
+            });
+        });
+    }
+}
